@@ -1,0 +1,31 @@
+{
+  "name": "pebble-bus",
+  "version": "1.0.0",
+  "description": "Pebble.js =========",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "gulp ls-compile&&pebble build",
+    "debug": "gulp ls-compile&&pebble build&&pebble install --emulator basalt&& pebble logs",
+    "debug-phone": "gulp ls-compile&&pebble build&&pebble install --phone 192.168.1.106 --logs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pebble/pebblejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pebble/pebblejs/issues"
+  },
+  "homepage": "https://github.com/pebble/pebblejs#readme",
+  "devDependencies": {
+    "coffee-script": "^1.10.0",
+    "gulp": "^3.9.0",
+    "gulp-livescript": "^3.0.0",
+    "gulp-param": "^1.0.3",
+    "gulp-watch": "^4.3.5",
+    "livescript": "^1.4.0",
+    "shelljs": "^0.5.3"
+  }
+}
