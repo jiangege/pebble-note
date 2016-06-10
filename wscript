@@ -128,8 +128,6 @@ def concat_javascript(ctx, js_path=None):
                 body = f.read()
                 if relpath.endswith('.json'):
                     body = JSON_TEMPLATE.format(body=body)
-
-                '''
                 elif relpath.endswith('.coffee'):
                     relpath, body = coffeescript_compile(relpath, body)
 
@@ -139,7 +137,6 @@ def concat_javascript(ctx, js_path=None):
                         os.makedirs(compiled_js_dir)
                     with open(compiled_js_path, 'w') as f:
                         f.write(body)
-                '''
 
                 if relpath == LOADER_PATH:
                     sources.insert(0, body)
