@@ -1,7 +1,7 @@
 class GenWindow
   (@win) ->
-    @win.on \show,  @onshow
-    @win.on \hide, @onhide
+    @win.on \show, ~> @onshow ...
+    @win.on \hide, ~> @onhide ...
   show: -> @win.show!
   hide: -> @win.hide!
   onshow: ->
