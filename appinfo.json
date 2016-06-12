@@ -1,5 +1,8 @@
 {
   "appKeys": {},
+  "capabilities": [
+    "configurable"
+  ],
   "companyName": "Jiangege",
   "longName": "China Note",
   "resources": {

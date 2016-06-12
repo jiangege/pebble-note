@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+        <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>China note</title>
+    <link href="//cdn.bootcss.com/ratchet/2.0.2/css/ratchet.min.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+    <script src="https://cdn1.lncld.net/static/js/av-min-1.0.0.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+  <div id="china-note">
+    <component :is="currentView"></component>
+  </div>
+
+  <template id="login-page">
+    <header class="bar bar-nav">
+      <h1 class="title">China note</h1>
+    </header>
+    <div class="content">
+      <p class="content-padded">
+      <input type="text" placeholder="用户名" v-model="username" />
+      <input type="password" placeholder="密码" v-model="password" />
+      <button class="btn btn-link" style="margin-bottom: 16px;" @click='register'>注册帐号</a>
+      <button class="btn btn-block" @click="login">登陆</button>
+    </div>
+  </template>
+  <template id="register-page">
+    <header class="bar bar-nav">
+      <a class="icon icon-left-nav pull-left" @click="back"></a>
+      <h1 class="title">注册账号</h1>
+    </header>
+    <div class="content">
+      <p class="content-padded">
+      <input type="text" placeholder="用户名" v-model="username" />
+      <input type="email" placeholder="邮箱" v-model="email" />
+      <input type="password" placeholder="密码" v-model="password" />
+      <input type="password" placeholder="再次输入二次密码" v-model="password2" />
+      <button class="btn btn-block" @click="register">注册</button>
+    </div>
+  </template>
+
+  <template id="control-page">
+    <header class="bar bar-nav">
+      <h1 class="title">配置页</h1>
+      <a class="icon icon-compose pull-right" @click="createNote"></a>
+    </header>
+    <div class="content">
+      <p class="content-padded">
+      <ul class="table-view" v-show="noteList.length > 0">
+        <li class="table-view-cell" v-for="note in noteList" track-by="objectId" @click="editNote(note.objectId, note.context, note.title)">
+          <a class="navigate-right">
+            {{note.title}}
+          </a>
+        </li>
+      </ul>
+      <button class="btn btn-block btn-primary" @click="save">保存</button>
+      <button class="btn btn-block" @click="logout">登出</button>
+    </div>
+  </template>
+
+
+  <template id="note-detail-page">
+    <header class="bar bar-nav">
+      <a class="icon icon-left-nav pull-left" @click="back"></a>
+      <h1 class="title">{{title}}</h1>
+    </header>
+    <div class="content">
+      <p class="content-padded">
+      <input type="text" placeholder="笔记标题" v-model="title" />
+      <textarea rows="10" v-model="context">
+      </textarea>
+      <button class="btn btn-block btn-negative" @click="delete" v-show="status =='edit'">删除</button>
+      <button class="btn btn-block" @click="update" v-show="status =='edit'">保存</button>
+      <button class="btn btn-block" @click="create" v-show="status =='create'">创建</button>
+    </div>
+  </template>
+
+  <script>
+
+    function initLeancloud(){
+      var APP_ID = 's8b1q7BFUsYqzxc6N0DGszyS-gzGzoHsz';
+      var APP_KEY = 'paqqJP2ce8AD0bTLPOjaEFUn';
+      AV.init({
+        appId: APP_ID,
+        appKey: APP_KEY
+      });
+    }
+
+    function isLogin(){
+      var currentUser = AV.User.current();
+      if (currentUser) {
+        return true;
+      }else {
+        return false;
+      }
+    }
+
+    Vue.component('control-page', {
+      template: '#control-page',
+      data: function(){
+        return {
+          noteList: []
+        }
+      },
+      methods: {
+        logout: function(){
+          AV.User.logOut();
+          AppVue.currentView = 'login-page'
+        },
+        createNote: function(){
+          AppVue.currentView = 'note-detail-page'
+          this.$nextTick(function(){
+            AppVue.$children[0].status = 'create'
+          });
+        },
+        getNoteList: function(){
+          var noteList = new AV.Query('Note'), that = this;
+          noteList.find().then(function (results) {
+            that.noteList = results.map(function(v){
+              return {
+                title: v.get('title'),
+                context: v.get('context'),
+                objectId: v.get('objectId')
+              }
+            });
+          }, function (err) {
+            alert(err.message);
+          });
+        },
+
+        editNote: function(objectId, context, title){
+          AppVue.currentView = 'note-detail-page'
+          this.$nextTick(function(){
+            AppVue.$children[0].status = 'edit'
+            AppVue.$children[0].title = title
+            AppVue.$children[0].context = context
+            AppVue.$children[0].objectId = objectId
+          });
+        },
+        save: function(){
+          if(isLogin()){
+            document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify({
+              sessionToken: AV.User.current()._sessionToken
+            }));
+          }
+        }
+      },
+      compiled: function(){
+        this.getNoteList();
+      }
+    });
+
+    Vue.component('note-detail-page', {
+      template: '#note-detail-page',
+      data: function(){
+        return {
+          status: null,
+          context: '',
+          objectId: null,
+          title: '',
+        }
+      },
+      methods: {
+        back: function(){
+          AppVue.currentView = 'control-page';
+        },
+        create: function(){
+          var acl = new AV.ACL();
+          var currentUser = AV.User.current()
+          acl.setPublicReadAccess(false);
+          acl.setPublicWriteAccess(false);
+          acl.setReadAccess(currentUser, true);
+          acl.setWriteAccess(currentUser, true);
+          var Note = AV.Object.extend('Note');
+          var note = new Note();
+          note.set('title', this.title);
+          note.set('context', this.context);
+          note.setACL(acl);
+          note.save().then(function () {
+            alert('创建成功');
+            AppVue.currentView = 'control-page'
+          }, function (err) {
+            alert(err.message);
+          });
+        },
+        delete: function(){
+          var note = AV.Object.createWithoutData('Note', this.objectId);
+          note.destroy().then(function () {
+            alert('删除成功');
+            AppVue.currentView = 'control-page';
+          }, function (err) {
+            alert(err.message);
+          });
+        },
+        update: function(){
+          var note = AV.Object.createWithoutData('Note', this.objectId);
+          note.set('title', this.title);
+          note.set('context', this.context);
+          note.save().then(function () {
+            alert('更新成功');
+          }, function (err) {
+            alert(err.message);
+          });
+        }
+      }
+    });
+
+    Vue.component('register-page', {
+      template: '#register-page',
+      methods: {
+        back: function(){
+          AppVue.currentView = 'login-page';
+        },
+        register: function(){
+          var user = new AV.User();
+          if(this.password != this.password2){
+            return alert("两次密码输入不相等");
+          }
+          user.setUsername(this.username);
+          user.setPassword(this.password);
+          user.setEmail(this.email);
+          user.signUp().then(function (loginedUser) {
+            AppVue.currentView = 'login-page';
+          }, (function (err) {
+            alert(err.message);
+          }));
+        }
+      }
+    });
+
+    Vue.component('login-page', {
+      template: '#login-page',
+      methods: {
+        login: function(){
+          AV.User.logIn(this.username, this.password).then(function (loginedUser) {
+            AppVue.currentView = 'control-page'
+          }, (function (err) {
+            alert(err.message)
+          }));
+        },
+        register: function(){
+          AppVue.currentView = 'register-page'
+        }
+      },
+      compiled: function(){
+        console.log(this);
+      }
+    });
+
+
+    var AppVue = new Vue({
+      el: '#china-note',
+      data: {
+        isLogin: false,
+        currentView: null
+      },
+      created: function(){
+        initLeancloud();
+        if(!isLogin()){
+          this.currentView = 'login-page'
+        }else {
+          this.currentView = 'control-page'
+        }
+      }
+    })
+
+
+  </script>
+</body>
+</html>

@@ -5,12 +5,13 @@ const API_KEY = 'paqqJP2ce8AD0bTLPOjaEFUn'
 
 require! {
   ajax
+  'settings': Settings
 }
 
-module.exports = Common =
+module.exports =
   api: (method, path, data, cb = -> ) ->
     url = serverUrl + apiVersion + path
-    ajax {
+    options = {
       url
       method
       data
@@ -18,8 +19,11 @@ module.exports = Common =
       headers:
         'X-LC-Id': API_ID
         'X-LC-Key': API_KEY
+    }
+    if (sessionToken = Settings.option(\sessionToken))?
+      options.headers[\X-LC-Session] = sessionToken
 
-    }, (data, status, req) -> cb null, data
+    ajax options, (data, status, req) -> cb null, data
     , (err) -> cb err
 
   getNoteList: (cb = ->) ->

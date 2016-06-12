@@ -21,8 +21,7 @@ class NoteListScreen extends GenWindow
         ...
     }
 
-    win.on \select, ~>
-      @onselect ...
+    win.on \select, ~> @onselect ...
     super win
 
   onshow: ->
@@ -30,17 +29,21 @@ class NoteListScreen extends GenWindow
     noteList =  Settings.data \noteList
 
     if lastUpdateTime ~= null or Date.now! - lastUpdateTime >= @updateInterval
-      Common.getNoteList (err, dataList) ~>
-        if err?
-          @renderErr err.error
-        else
-          @noteList = dataList
-          Settings.data \lastUpdateTime, Date.now!
-          Settings.data \noteList, dataList
-          @render!
+      @forceUpdate!
     else
       @noteList = noteList ? []
       @render!
+
+  forceUpdate: ->
+    Common.getNoteList (err, dataList) ~>
+      if err?
+        @renderErr err.error
+      else
+        @noteList = dataList
+        Settings.data \lastUpdateTime, Date.now!
+        Settings.data \noteList, dataList
+        @render!
+
 
   render: ->
     if @noteList.length is 0
