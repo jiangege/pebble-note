@@ -1,4 +1,4 @@
-Pebble Bus
+Pebble Note
 =========
 
 ## Getting Started

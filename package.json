@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish": "gulp ls-compile&&pebble build",
     "debug": "gulp ls-compile&&pebble build&&pebble install --emulator basalt&& pebble logs",
-    "debug-phone": "gulp ls-compile&&pebble build&&pebble install --phone 192.168.0.102 --logs",
+    "debug-phone": "gulp ls-compile&&pebble build&&pebble install --phone 192.168.0.102 --logs"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   "homepage": "https://github.com/jiangege/pebble-note/blob/master/README.md",
   "devDependencies": {
     "coffee-script": "^1.10.0",
+    "express": "^4.13.4",
     "gulp": "^3.9.0",
     "gulp-livescript": "^3.0.0",
     "gulp-param": "^1.0.3",
