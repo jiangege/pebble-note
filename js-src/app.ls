@@ -7,7 +7,7 @@ require! {
 noteListScreen = new NoteListScreen
 
 Settings.config(
-  {url: 'http://192.168.0.104:8080'}
+  {url: 'http://jiangege.github.io/pebble-note'}
   , (e) ->
   , (e) ->
     noteListScreen.forceUpdate!
