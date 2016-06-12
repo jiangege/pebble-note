@@ -14,8 +14,10 @@ class NoteListScreen extends GenWindow
       scrollable: false
       style: \small
       sections:
-        *items:
-          *title: 'loading...'
+        * title: 'China Note'
+          items:
+            * title: '加载中...'
+          ...
         ...
     }
 
