@@ -1,7 +1,6 @@
 require! {
-  "./noteDetailScreen": NoteDetailScreen
+  './noteListScreen': NoteListScreen
 }
 
-
-noteDetailScreen = new NoteDetailScreen
-noteDetailScreen.show "你真棒"
+noteListScreen = new NoteListScreen
+noteListScreen.show!

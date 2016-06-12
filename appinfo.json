@@ -1,7 +1,7 @@
 {
   "appKeys": {},
   "companyName": "Jiangege",
-  "longName": "China Bus",
+  "longName": "China Note",
   "resources": {
     "media": [
       {
@@ -15,11 +15,6 @@
         "type": "png"
       },
       {
-        "file": "images/icon_bus.png",
-        "name": "ICON_BUS",
-        "type": "png"
-      },
-      {
         "file": "fonts/UbuntuMono-Regular.ttf",
         "name": "MONO_FONT_14",
         "type": "font"
@@ -27,15 +22,15 @@
     ]
   },
   "sdkVersion": "3",
-  "shortName": "china bus",
+  "shortName": "china note",
   "targetPlatforms": [
     "aplite",
     "basalt",
     "chalk"
   ],
   "uuid": "133015f0-cf20-4c03-996b-3c9be5a64e5d",
-  "versionCode": 22,
-  "versionLabel": "2.2",
+  "versionCode": 1,
+  "versionLabel": "0.1",
   "watchapp": {
     "watchface": false
   }

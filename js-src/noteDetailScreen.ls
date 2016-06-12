@@ -35,7 +35,6 @@ class NoteDetailScreen extends GenWindow
     win = new UI.Card {
       scrollable: false
       style: \small
-      status: falsec
     }
 
     win.on 'click', \down, ~> @ondown!
@@ -43,7 +42,6 @@ class NoteDetailScreen extends GenWindow
     super win
 
   show: (@text) ->
-    console.log "hello"
     @textAry = calcPaging @text
     @render!
     super!
